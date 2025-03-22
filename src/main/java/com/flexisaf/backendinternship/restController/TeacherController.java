@@ -75,7 +75,7 @@ public class TeacherController {
         if (teachers.size() + 1 <= id) {
             throw new ErrorResponseException(HttpStatusCode.valueOf(400));
         }
-        return teachers.get(id);
+        return teachers.get(id - 1);
     }
 
     @PostMapping("/")
@@ -93,6 +93,6 @@ public class TeacherController {
         }
         teacher.setId(id);
         teachers.add(teacher);
-        return teachers.get(id + 1);
+        return teachers.get(id - 1);
     }
 }

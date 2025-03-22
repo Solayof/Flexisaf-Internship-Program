@@ -37,7 +37,7 @@ public class StaffController {
         if (staff.size() + 1 <= id) {
             throw new ErrorResponseException(HttpStatusCode.valueOf(400));
         }
-        return staff.get(id);
+        return staff.get(id - 1);
     }
 
     @PostMapping("/")
@@ -55,7 +55,7 @@ public class StaffController {
         }
         newStaff.setId(id);
         staff.set(id, newStaff);
-        return staff.get(id);
+        return staff.get(id - 1);
     }
 
 }
