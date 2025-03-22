@@ -10,6 +10,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @Component
 public class StaffModelAssembler implements RepresentationModelAssembler<Staff, EntityModel<Staff>> {
+    @SuppressWarnings("null")
     @Override
     public EntityModel<Staff> toModel(@NonNull Staff staff) {
         return EntityModel.of(staff,
