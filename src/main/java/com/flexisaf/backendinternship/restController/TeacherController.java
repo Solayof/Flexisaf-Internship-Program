@@ -2,7 +2,11 @@ package com.flexisaf.backendinternship.restController;
 
 import com.flexisaf.backendinternship.entity.Staff;
 import com.flexisaf.backendinternship.entity.Teacher;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ProblemDetail;
 import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.boot.web.servlet.error.ErrorController;
@@ -32,7 +36,7 @@ public class TeacherController {
 
         teachers = new  ArrayList<Teacher>();
 
-        teacher = new Teacher(4);
+        teacher = new Teacher(1);
         teacher.setStaffId(staff.get(1).getId());
         teacher.setFullName(staff.get(1).getFirstName() + " " + staff.get(1).getLastName());
         teacher.setDiscipline("Mathematics");
@@ -44,19 +48,19 @@ public class TeacherController {
         teacher.setDiscipline("Chemistry");
         teachers.add(teacher);
 
-        teacher = new Teacher(1);
+        teacher = new Teacher(3);
         teacher.setStaffId(staff.get(2).getId());
         teacher.setFullName(staff.get(2).getFirstName() + " " + staff.get(2).getLastName());
         teacher.setDiscipline("Physics");
         teachers.add(teacher);
 
-        teacher = new Teacher(5);
+        teacher = new Teacher(4);
         teacher.setStaffId(staff.get(3).getId());
         teacher.setFullName(staff.get(3).getFirstName() + " " + staff.get(3).getLastName());
         teacher.setDiscipline("Biology");
         teachers.add(teacher);
 
-        teacher = new Teacher(3);
+        teacher = new Teacher(5);
         teacher.setStaffId(staff.get(4).getId());
         teacher.setFullName(staff.get(4).getFirstName() + " " + staff.get(4).getLastName());
         teacher.setDiscipline("Software Engineering");
@@ -64,7 +68,15 @@ public class TeacherController {
 
     }
 
+
     @GetMapping("")
+    @Operation(summary = "Get list of teachers in the server")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "successfully get teachers list"
+            )
+    })
     public List<Teacher> teachers() {
 
         return teachers;
@@ -73,12 +85,12 @@ public class TeacherController {
     @GetMapping("/{id}")
     public Teacher getOne(@PathVariable int id) {
         if (id == 0 || teachers.size()  < id) {
-            throw new ErrorResponseException(HttpStatusCode.valueOf(400));
+            throw new ErrorResponseException(HttpStatusCode.valueOf(404));
         }
         return teachers.get(id - 1);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public Teacher createOne(@RequestBody Teacher newTeacher) {
         int id = teachers.size();
         newTeacher.setId(id);
@@ -89,7 +101,7 @@ public class TeacherController {
     @PutMapping("/{id}")
     public Teacher updateOne(@RequestBody Teacher teacher, @PathVariable int id) {
         if (id == 0 || teachers.size()  < id) {
-            throw new ErrorResponseException(HttpStatusCode.valueOf(400));
+            throw new ErrorResponseException(HttpStatusCode.valueOf(404));
         }
         teacher.setId(id);
         teachers.set(id - 1, teacher);

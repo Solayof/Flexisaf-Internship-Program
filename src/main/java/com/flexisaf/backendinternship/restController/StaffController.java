@@ -1,5 +1,8 @@
 package com.flexisaf.backendinternship.restController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +30,13 @@ public class StaffController {
     }
 
     @GetMapping("")
+    @Operation(summary = "Get list of staff in the server")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "successfully get staff list"
+            )
+    })
     public List<Staff> staff() {
 
         return staff;
@@ -35,12 +45,12 @@ public class StaffController {
     @GetMapping("/{id}")
     public Staff getOne(@PathVariable int id) {
         if (id == 0 || staff.size()  < id) {
-            throw new ErrorResponseException(HttpStatusCode.valueOf(400));
+            throw new ErrorResponseException(HttpStatusCode.valueOf(404));
         }
         return staff.get(id - 1);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public Staff createOne(@RequestBody Staff newStaff) {
         int id = staff.size();
         newStaff.setId(id);
@@ -51,10 +61,10 @@ public class StaffController {
     @PutMapping("/{id}")
     public Staff updateOne(@RequestBody Staff newStaff, @PathVariable int id) {
         if (id == 0 || staff.size()  < id) {
-            throw new ErrorResponseException(HttpStatusCode.valueOf(400));
+            throw new ErrorResponseException(HttpStatusCode.valueOf(404));
         }
         newStaff.setId(id);
-        staff.set(id, newStaff);
+        staff.set(id - 1, newStaff);
         return staff.get(id - 1);
     }
 
