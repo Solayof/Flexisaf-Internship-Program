@@ -72,7 +72,7 @@ public class TeacherController {
 
     @GetMapping("/{id}")
     public Teacher getOne(@PathVariable int id) {
-        if (teachers.size() <= id) {
+        if (teachers.size() + 1 <= id) {
             throw new ErrorResponseException(HttpStatusCode.valueOf(400));
         }
         return teachers.get(id);
@@ -88,11 +88,11 @@ public class TeacherController {
 
     @PutMapping("/{id}")
     public Teacher updateOne(@RequestBody Teacher teacher, @PathVariable int id) {
-        if (teachers.size() <= id) {
+        if (teachers.size() + 1 <= id  ) {
             throw new ErrorResponseException(HttpStatusCode.valueOf(400));
         }
         teacher.setId(id);
         teachers.add(teacher);
-        return teachers.get(id);
+        return teachers.get(id + 1);
     }
 }
