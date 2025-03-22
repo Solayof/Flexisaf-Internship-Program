@@ -9,9 +9,4 @@ public class RootController {
     public String root() {
         return "Spring boot server is running";
     }
-
-   @GetMapping("*")
-    public String NotFound() {
-        return "Not found";
-    }
 }
