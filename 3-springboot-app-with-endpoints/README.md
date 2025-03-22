@@ -1,6 +1,7 @@
 # Backend Internship - Spring Boot Application
 
-This is a basic Spring Boot application setup using the Maven build tool. It is part of a weekly project to get started with Spring Boot development.
+This is a basic Spring Boot application setup using the Maven build tool.
+
 
 [//]: # (## Project Name)
 
@@ -35,3 +36,18 @@ cd backendinternship
 curl --request l -sL \
      --url 'http://localhost:8080'
 ```
+
+# Task
+```
+Create a Spring BootApplication with atleast 4 endpoints
+```
+# Routes
+
+
+| Endpoint                           | description                               |
+|:----------------------------------:|:-----------------------------------------:|
+| /docs.html                         | endpoints documentation                    |
+| /teachers                          | list of teachers and create a teacher                          |
+|/teachers/{id}                      | get and update a specific teacher         |
+| /staff                          | list of staff and create  staff                          |
+|/staff/{id}                      | get and update a specific staff         |
