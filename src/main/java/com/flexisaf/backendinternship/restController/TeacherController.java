@@ -26,6 +26,8 @@ public class TeacherController {
 
         Teacher teacher;
 
+        teachers = new  ArrayList<Teacher>();
+
         teacher = new Teacher(4);
         teacher.setStaffId(staff.get(1).getId());
         teacher.setFullName(staff.get(1).getFirstName() + " " + staff.get(1).getLastName());
