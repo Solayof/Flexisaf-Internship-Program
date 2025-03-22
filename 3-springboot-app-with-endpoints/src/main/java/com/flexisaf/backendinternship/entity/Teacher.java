@@ -1,7 +1,11 @@
 package com.flexisaf.backendinternship.entity;
 
 
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 public class Teacher {
     private int id;
     private String discipline;
@@ -13,34 +17,11 @@ public class Teacher {
         this.id = id;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
+    public Teacher(int id, String discipline, String fullName, int staffId) {
         this.id = id;
-    }
-
-    public String getDiscipline() {
-        return discipline;
-    }
-
-    public void setDiscipline(String discipline) {
         this.discipline = discipline;
-    }
-
-    public int getStaffId() {
-        return staffId;
-    }
-
-    public void setStaffId(int staffId) {
+        this.fullName = fullName;
         this.staffId = staffId;
     }
 
-    public String getFullName() {
-        return fullName;
-    }
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
 }
