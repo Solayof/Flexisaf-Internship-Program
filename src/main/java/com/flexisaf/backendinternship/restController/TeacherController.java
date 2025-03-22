@@ -5,6 +5,8 @@ import com.flexisaf.backendinternship.entity.Teacher;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.ErrorResponseException;
@@ -13,8 +15,13 @@ import org.springframework.boot.web.servlet.error.ErrorController;
 import jakarta.annotation.PostConstruct;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/teachers")
@@ -77,34 +84,49 @@ public class TeacherController {
                     description = "successfully get teachers list"
             )
     })
-    public List<Teacher> teachers() {
+    public CollectionModel<EntityModel<Teacher>> teachers() {
+        List<EntityModel<Teacher>> teacherlist = teachers.stream()
+                .map(teacher -> EntityModel.of(teacher,
+                        linkTo(methodOn(TeacherController.class).getOne(teacher.getId())).withSelfRel(),
+                        linkTo(methodOn(TeacherController.class).teachers()).withRel("teachers")
+                )).toList();
 
-        return teachers;
+        return CollectionModel.of(teacherlist,
+                linkTo(methodOn(TeacherController.class).teachers()).withSelfRel());
     }
 
     @GetMapping("/{id}")
-    public Teacher getOne(@PathVariable int id) {
+    public EntityModel<Teacher> getOne(@PathVariable int id) {
         if (id == 0 || teachers.size()  < id) {
             throw new ErrorResponseException(HttpStatusCode.valueOf(404));
         }
-        return teachers.get(id - 1);
+        return EntityModel.of(teachers.get(id - 1),
+                linkTo(methodOn(TeacherController.class).getOne(id)).withSelfRel(),
+                linkTo(methodOn(TeacherController.class).teachers()).withRel("teachers")
+        );
     }
 
     @PostMapping("")
-    public Teacher createOne(@RequestBody Teacher newTeacher) {
+    public EntityModel<Teacher> createOne(@RequestBody Teacher newTeacher) {
         int id = teachers.size();
         newTeacher.setId(id);
         teachers.add(newTeacher);
-        return teachers.get(id);
+        return EntityModel.of(teachers.get(id - 1),
+                linkTo(methodOn(TeacherController.class).createOne(newTeacher)).withSelfRel(),
+                linkTo(methodOn(TeacherController.class).teachers()).withRel("teachers")
+        );
     }
 
     @PutMapping("/{id}")
-    public Teacher updateOne(@RequestBody Teacher teacher, @PathVariable int id) {
+    public EntityModel<Teacher> updateOne(@RequestBody Teacher teacher, @PathVariable int id) {
         if (id == 0 || teachers.size()  < id) {
             throw new ErrorResponseException(HttpStatusCode.valueOf(404));
         }
         teacher.setId(id);
         teachers.set(id - 1, teacher);
-        return teachers.get(id - 1);
+        return EntityModel.of(teachers.get(id - 1),
+                linkTo(methodOn(TeacherController.class).updateOne(teacher, id)).withSelfRel(),
+                linkTo(methodOn(TeacherController.class).teachers()).withRel("teachers")
+        );
     }
 }
