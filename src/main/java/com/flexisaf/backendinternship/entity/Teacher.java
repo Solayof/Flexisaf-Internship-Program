@@ -13,6 +13,13 @@ public class Teacher {
         this.id = id;
     }
 
+    public Teacher(int id, String discipline, String fullName, int staffId) {
+        this.id = id;
+        this.discipline = discipline;
+        this.fullName = fullName;
+        this.staffId = staffId;
+    }
+
     public int getId() {
         return id;
     }
