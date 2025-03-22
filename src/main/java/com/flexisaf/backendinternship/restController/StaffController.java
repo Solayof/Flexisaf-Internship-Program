@@ -1,6 +1,5 @@
 package com.flexisaf.backendinternship.restController;
 
-import com.flexisaf.backendinternship.entity.Teacher;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -14,13 +13,18 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import com.flexisaf.backendinternship.entity.Staff;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @RestController
 @RequestMapping("staff")
 public class StaffController {
     private List<Staff> staff;
+    private final StaffModelAssembler assembler;
+
+    public StaffController(List<Staff> staff, StaffModelAssembler assembler) {
+        this.assembler = assembler;
+        this.staff = staff;
+    }
 
     @PostConstruct
     public void staffList() {
@@ -44,10 +48,7 @@ public class StaffController {
     })
     public CollectionModel<EntityModel<Staff>> staff() {
         List<EntityModel<Staff>> stafflist = staff.stream()
-                .map(astaff -> EntityModel.of(astaff,
-                        linkTo(methodOn(StaffController.class).getOne(astaff.getId())).withSelfRel(),
-                        linkTo(methodOn(StaffController.class).staff()).withRel("staff")
-                )).toList();
+                .map(assembler::toModel).toList();
 
         return CollectionModel.of(stafflist,
                 linkTo(methodOn(StaffController.class).staff()).withSelfRel());
@@ -58,10 +59,7 @@ public class StaffController {
         if (id == 0 || staff.size()  < id) {
             throw new ErrorResponseException(HttpStatusCode.valueOf(404));
         }
-        return EntityModel.of(staff.get(id - 1),
-                linkTo(methodOn(StaffController.class).getOne(id)).withSelfRel(),
-                linkTo(methodOn(StaffController.class).staff()).withRel("staff")
-                );
+        return assembler.toModel(staff.get(id - 1));
     }
 
     @PostMapping("")
@@ -69,10 +67,7 @@ public class StaffController {
         int id = staff.size();
         newStaff.setId(id);
         staff.add(newStaff);
-        return EntityModel.of(staff.get(id),
-                linkTo(methodOn(StaffController.class).createOne(newStaff)).withSelfRel(),
-                linkTo(methodOn(StaffController.class).staff()).withRel("staff")
-        );
+        return assembler.toModel(staff.get(id));
     }
 
     @PutMapping("/{id}")
@@ -82,10 +77,7 @@ public class StaffController {
         }
         newStaff.setId(id);
         staff.set(id - 1, newStaff);
-        return EntityModel.of(staff.get(id - 1),
-                linkTo(methodOn(StaffController.class).updateOne(newStaff, id)).withSelfRel(),
-                linkTo(methodOn(StaffController.class).staff()).withRel("staff")
-        );
+        return assembler.toModel(staff.get(id - 1));
     }
 
 }
