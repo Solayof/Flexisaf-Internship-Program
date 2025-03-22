@@ -64,7 +64,7 @@ public class TeacherController {
 
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public List<Teacher> teachers() {
 
         return teachers;

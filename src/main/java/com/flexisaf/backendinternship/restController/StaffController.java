@@ -26,7 +26,7 @@ public class StaffController {
 
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public List<Staff> staff() {
 
         return staff;
