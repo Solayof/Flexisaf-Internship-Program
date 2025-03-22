@@ -34,7 +34,7 @@ public class StaffController {
 
     @GetMapping("/{id}")
     public Staff getOne(@PathVariable int id) {
-        if (staff.size() + 1 <= id) {
+        if (id == 0 || staff.size()  < id) {
             throw new ErrorResponseException(HttpStatusCode.valueOf(400));
         }
         return staff.get(id - 1);
@@ -50,7 +50,7 @@ public class StaffController {
 
     @PutMapping("/{id}")
     public Staff updateOne(@RequestBody Staff newStaff, @PathVariable int id) {
-        if (staff.size() + 1 <= id) {
+        if (id == 0 || staff.size()  < id) {
             throw new ErrorResponseException(HttpStatusCode.valueOf(400));
         }
         newStaff.setId(id);
