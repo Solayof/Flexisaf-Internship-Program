@@ -17,7 +17,7 @@ This is a basic Spring Boot application setup using the Maven build tool. It is 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/backendinternship.git
+git clone https://github.com/solayof/Flexisaf-Internship-Program.git
 cd backendinternship
 ```
 
