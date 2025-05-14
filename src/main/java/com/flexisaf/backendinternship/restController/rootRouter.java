@@ -9,4 +9,9 @@ public class rootRouter {
     public String root() {
         return "Spring boot server is running";
     }
+
+   @GetMapping("*")
+    public String NotFound() {
+        return "Spring boot server is running";
+    }
 }
