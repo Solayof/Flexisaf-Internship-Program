@@ -1,23 +1,22 @@
 package com.flexisaf.backendinternship.entity;
 
+import com.flexisaf.backendinternship.constant.ERole;
+
 import jakarta.persistence.*;
 import lombok.*;
 
-
-@Entity
-@Table(name = "courses")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Course {
+@Entity
+@Table(name = "roles")
+public class RoleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
-
-    @Column(name = "description")
-    private String description;
-
+    @Enumerated(EnumType.STRING)
+    @Column(name = "name")
+    private ERole name;
 }
