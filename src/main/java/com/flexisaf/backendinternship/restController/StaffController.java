@@ -30,11 +30,50 @@ public class StaffController {
     public void staffList() {
         staff = new ArrayList<Staff>();
 
-        // staff.add(new Staff(1, "solomon", "moses", "solomonayofemi@gmail.com", "08088664424"));
-        // staff.add(new Staff(2,"Ojo", "Arisekola", "arisekola@top.com", "08088664424"));
-        // staff.add(new Staff(3,"Joy", "Pelumi", "pelumi@top.com", "08088664424"));
-        // staff.add(new Staff(4,"Tolu", "Mariam", "mariam@top.com", "08088664424"));
-        // staff.add(new Staff(5,"Loveth", "Arieren", "arieren@top.com", "08088664424"));
+        Staff st = new Staff();
+        st.setLastName("moses");
+        st.setEmail("solomonayofemi@gmail.com");
+        st.setPhone("08088664424");
+        st.setFirstName("Solomon");
+        st.setId(1);
+
+        staff.add(st);
+
+        Staff st1 = new Staff();
+        st1.setLastName("Arisekola");
+        st1.setEmail("arisekola@top.com");
+        st1.setPhone("08088664424");
+        st1.setFirstName("Ojo");
+        st1.setId(2);
+
+        staff.add(st1);
+
+        Staff st2 = new Staff();
+        st2.setLastName("Pelumi");
+        st2.setEmail("pelumi@top.com");
+        st2.setPhone("08088664424");
+        st2.setFirstName("pelumi@top.com");
+        st2.setId(3);
+
+        staff.add(st2);
+
+        Staff st3 = new Staff();
+        st3.setLastName("Mariam");
+        st3.setEmail("mariam@top.com");
+        st3.setPhone("08088664424");
+        st3.setFirstName("Tolu");
+        st3.setId(3);
+
+        staff.add(st3);
+
+        Staff st4 = new Staff();
+        st4.setLastName("Arieren");
+        st4.setEmail("arieren@top.com");
+        st4.setPhone("08088664424");
+        st4.setFirstName("Loveth");
+        st4.setId(4);
+
+        staff.add(st4);
 
     }
 
