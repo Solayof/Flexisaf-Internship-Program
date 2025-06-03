@@ -30,11 +30,11 @@ public class StaffController {
     public void staffList() {
         staff = new ArrayList<Staff>();
 
-        staff.add(new Staff(1, "solomon", "moses", "solomonayofemi@gmail.com", "08088664424"));
-        staff.add(new Staff(2,"Ojo", "Arisekola", "arisekola@top.com", "08088664424"));
-        staff.add(new Staff(3,"Joy", "Pelumi", "pelumi@top.com", "08088664424"));
-        staff.add(new Staff(4,"Tolu", "Mariam", "mariam@top.com", "08088664424"));
-        staff.add(new Staff(5,"Loveth", "Arieren", "arieren@top.com", "08088664424"));
+        // staff.add(new Staff(1, "solomon", "moses", "solomonayofemi@gmail.com", "08088664424"));
+        // staff.add(new Staff(2,"Ojo", "Arisekola", "arisekola@top.com", "08088664424"));
+        // staff.add(new Staff(3,"Joy", "Pelumi", "pelumi@top.com", "08088664424"));
+        // staff.add(new Staff(4,"Tolu", "Mariam", "mariam@top.com", "08088664424"));
+        // staff.add(new Staff(5,"Loveth", "Arieren", "arieren@top.com", "08088664424"));
 
     }
 
