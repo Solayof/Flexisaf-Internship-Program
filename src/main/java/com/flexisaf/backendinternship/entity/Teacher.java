@@ -19,7 +19,7 @@ public class Teacher {
 
     @OneToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserEntity user;
 
 
 }
