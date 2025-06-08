@@ -1,9 +1,8 @@
 package com.flexisaf.backendinternship.service;
 
-import com.flexisaf.backendinternship.entity.User;
+import com.flexisaf.backendinternship.entity.UserEntity;
 import com.flexisaf.backendinternship.repository.UserRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,13 +19,13 @@ public class UserServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return UserdetailsImpl.build(user);
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("UserEntity not found"));
+        return UserDetailsImpl.build(user);
     }
 
-    public String addUser(User user) {
-        user.setPassword(encoder.encoder(user.getPassword()));
+    public String addUser(UserEntity user) {
+        user.setPassword(encoder.encode(user.getPassword()));
         userRepository.save(user);
-        return "User added Sucessfully";
+        return "UserEntity added Sucessfully";
     }
 }

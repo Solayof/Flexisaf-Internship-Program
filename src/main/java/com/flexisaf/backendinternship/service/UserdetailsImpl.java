@@ -2,6 +2,7 @@ package com.flexisaf.backendinternship.service;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -10,12 +11,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.flexisaf.backendinternship.entity.User;
-
-import lombok.Setter;
+import com.flexisaf.backendinternship.entity.UserEntity;
 
 
-public class UserdetailsImpl implements UserDetails {
+public class UserDetailsImpl implements UserDetails {
     private UUID id;
     private String firstName;
     private String middleName;
@@ -25,10 +24,10 @@ public class UserdetailsImpl implements UserDetails {
     private String gender;
     @JsonIgnore
     private String password;
-    private Collection<? extends GrantedAuthority> authorities;
     private LocalDate dob;
+    private Collection<? extends GrantedAuthority> authorities;
 
-    private UserdetailsImpl( UUID id, String firstName, String middleName, String lastName,
+    private UserDetailsImpl( UUID id, String firstName, String middleName, String lastName,
                              String email, String phone, String gender, String password, Collection<? extends GrantedAuthority> authorities,
                              LocalDate dob) {
         this.id = id;
@@ -39,15 +38,15 @@ public class UserdetailsImpl implements UserDetails {
         this.phone = phone;
         this.gender = gender;
         this.password = password;
-        this.authorities = authorities;
         this.dob = dob;
+        this.authorities = authorities;
     }
-    
-    public static UserdetailsImpl build(User user) {
+
+    public static UserDetailsImpl build(UserEntity user) {
         List<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName().name()) )
-                .toList();
-        return new UserdetailsImpl(
+                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
+                .collect(Collectors.toList());
+        return new UserDetailsImpl(
                 user.getId(),
                 user.getFirstName(),
                 user.getMiddleName(),
@@ -57,9 +56,10 @@ public class UserdetailsImpl implements UserDetails {
                 user.getGender(),
                 user.getPassword(),
                 authorities,
-                user.getDob()
-        );
+                user.getDob());
     }
+    
+    
 
     public UUID getId() {
         return id;
@@ -139,5 +139,10 @@ public class UserdetailsImpl implements UserDetails {
 
     public void setDob(LocalDate dob) {
         this.dob = dob;
+    }
+
+    @Override
+    public String getUsername() {
+       return email; 
     }
 }

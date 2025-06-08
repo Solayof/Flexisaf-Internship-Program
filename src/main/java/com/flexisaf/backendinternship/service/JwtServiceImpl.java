@@ -1,4 +1,4 @@
-package com.mycompany.generic.service;
+package com.flexisaf.backendinternship.service;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
