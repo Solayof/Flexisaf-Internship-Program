@@ -9,7 +9,7 @@ import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.hateoas.EntityModel;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-import com.flexisaf.backendinternship.entity.User;
+import com.flexisaf.backendinternship.entity.UserEntity;
 import com.flexisaf.backendinternship.repository.UserRepository;
 
 import java.util.List;
@@ -28,15 +28,15 @@ public class UserController {
 
 
     @GetMapping("")
-    @Operation(summary = "Get list of User in the server")
+    @Operation(summary = "Get list of UserEntity in the server")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "successfully get User list"
+                    description = "successfully get UserEntity list"
             )
     })
-    public CollectionModel<EntityModel<User>> users() {
-        List<EntityModel<User>> Userlist = userRepository.findAll().stream()
+    public CollectionModel<EntityModel<UserEntity>> users() {
+        List<EntityModel<UserEntity>> Userlist = userRepository.findAll().stream()
                 .map(assembler::toModel).toList();
 
         return CollectionModel.of(Userlist,
@@ -44,20 +44,20 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public EntityModel<User> getOne(@PathVariable UUID id) {
-        User user = userRepository.findById(id)
+    public EntityModel<UserEntity> getOne(@PathVariable UUID id) {
+        UserEntity user = userRepository.findById(id)
         .orElseThrow(() -> new ErrorResponseException(HttpStatusCode.valueOf(404)));
         return assembler.toModel(user);
     }
 
     @PostMapping("")
-    public EntityModel<User> createOne(@RequestBody User newUser) {
+    public EntityModel<UserEntity> createOne(@RequestBody UserEntity newUser) {
         return assembler.toModel(userRepository.save(newUser));
     }
 
     @PutMapping("/{id}")
-    public EntityModel<User> updateOne(@RequestBody User newUser, @PathVariable UUID id) {
-        User usr = userRepository.findById(id)
+    public EntityModel<UserEntity> updateOne(@RequestBody UserEntity newUser, @PathVariable UUID id) {
+        UserEntity usr = userRepository.findById(id)
             .map(user -> {
                 user.setFirstName(newUser.getFirstName());
                 user.setMiddleName(newUser.getMiddleName());
@@ -69,7 +69,7 @@ public class UserController {
             .orElseGet(() -> {
                 return userRepository.save(newUser);
             });
-            // .orElseThrow(() -> new RuntimeException("User not found with id: " + id));;
+            // .orElseThrow(() -> new RuntimeException("UserEntity not found with id: " + id));;
         return assembler.toModel(usr);
     }
 
