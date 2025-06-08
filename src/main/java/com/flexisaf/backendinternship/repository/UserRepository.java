@@ -5,10 +5,10 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.flexisaf.backendinternship.entity.User;
+import com.flexisaf.backendinternship.entity.UserEntity;
 
-public interface UserRepository extends JpaRepository<User, UUID> {
-    Optional<User> findById(String id);
-    Optional<User> findByEmail(String email);
+public interface UserRepository extends JpaRepository<UserEntity, UUID> {
+    Optional<UserEntity> findById(String id);
+    Optional<UserEntity> findByEmail(String email);
     Boolean existByEmail(String email);
 }
