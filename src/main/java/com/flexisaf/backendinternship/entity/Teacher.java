@@ -1,32 +1,25 @@
 package com.flexisaf.backendinternship.entity;
 
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import java.util.UUID;
 
-@Setter
-@Getter
+import jakarta.persistence.*;
+import lombok.Data;
+
+@Data
 @Entity
 @Table(name = "teachers")
 public class Teacher {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(name = "discipline")
     private String discipline;
-    @Column(name = "fullName")
-    private String fullName;
 
     @OneToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name = "staff_id")
-    private Staff staff;
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    public Teacher() {}
-
-    public Teacher(int id) {
-        this.id = id;
-    }
 
 }
