@@ -9,5 +9,5 @@ import com.flexisaf.backendinternship.entity.UserEntity;
 
 public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     Optional<UserEntity> findByEmail(String email);
-    // Boolean existByEmail(String email);
+    Boolean existsByEmail(String email);
 }
