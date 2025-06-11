@@ -1,25 +1,22 @@
 package com.flexisaf.backendinternship.dto;
 
-import java.util.UUID;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ResponseMessageDTO {
-    private String jwt;
-    private UUID id;
-    private String message;
-
-    public ResponseMessageDTO(String jwt, UUID id, String message) {
-        this.jwt = jwt;
-        this.id = id;
-        this.message = message;
-    }
+public class LoginDTO {
+    
+    @NotBlank
+    private String email;
+    @NotBlank
+    private String password;
 }
