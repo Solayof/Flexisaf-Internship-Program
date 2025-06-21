@@ -2,6 +2,7 @@ package com.flexisaf.backendinternship.restController;
 
 
 import com.flexisaf.backendinternship.entity.Teacher;
+import com.flexisaf.backendinternship.exception.TeacherNotFoundException;
 import com.flexisaf.backendinternship.repository.TeacherRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,8 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
@@ -50,7 +49,7 @@ public class TeacherController {
     @GetMapping("/{id}")
     public EntityModel<Teacher> getOne(@PathVariable UUID id) {
         Teacher teacher = teacherRepository.findById(id)
-        .orElseThrow(() -> new ErrorResponseException(HttpStatusCode.valueOf(404)));
+        .orElseThrow(() -> new TeacherNotFoundException(id));
         return assembler.toModel(teacher);
     }
 
@@ -68,9 +67,7 @@ public class TeacherController {
 
                 return teacherRepository.save(teacher);
             })
-            .orElseGet(() -> {
-                return teacherRepository.save(newteacher);
-            })
+            .orElseThrow(() -> new TeacherNotFoundException(id))
         );
     }
 }
