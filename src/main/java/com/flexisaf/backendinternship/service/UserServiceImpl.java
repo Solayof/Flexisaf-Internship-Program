@@ -1,6 +1,7 @@
 package com.flexisaf.backendinternship.service;
 
 import com.flexisaf.backendinternship.entity.UserEntity;
+import com.flexisaf.backendinternship.exception.UserNotFoundException;
 import com.flexisaf.backendinternship.repository.UserRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class UserServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("UserEntity not found"));
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
         return UserDetailsImpl.build(user);
     }
 
