@@ -3,13 +3,16 @@ package com.flexisaf.backendinternship.restController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
+
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import com.flexisaf.backendinternship.entity.UserEntity;
+import com.flexisaf.backendinternship.exception.UserNotFoundException;
 import com.flexisaf.backendinternship.repository.UserRepository;
 
 import java.util.List;
@@ -28,6 +31,7 @@ public class UserController {
 
 
     @GetMapping("")
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     @Operation(summary = "Get list of UserEntity in the server")
     @ApiResponses(value = {
             @ApiResponse(
@@ -44,19 +48,21 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public EntityModel<UserEntity> getOne(@PathVariable UUID id) {
+    @PreAuthorize("hasRole('USER')")
+    public EntityModel<UserEntity> getOne(@Valid @PathVariable UUID id) {
         UserEntity user = userRepository.findById(id)
-        .orElseThrow(() -> new ErrorResponseException(HttpStatusCode.valueOf(404)));
+        .orElseThrow(() -> new UserNotFoundException(id));
         return assembler.toModel(user);
     }
 
-    @PostMapping("")
-    public EntityModel<UserEntity> createOne(@RequestBody UserEntity newUser) {
-        return assembler.toModel(userRepository.save(newUser));
-    }
+    // @PostMapping("")
+    // public EntityModel<UserEntity> createOne(@RequestBody UserEntity newUser) {
+    //     return assembler.toModel(userRepository.save(newUser));
+    // }
 
     @PutMapping("/{id}")
-    public EntityModel<UserEntity> updateOne(@RequestBody UserEntity newUser, @PathVariable UUID id) {
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+    public EntityModel<UserEntity> updateOne(@RequestBody UserEntity newUser, @Valid @PathVariable UUID id) {
         UserEntity usr = userRepository.findById(id)
             .map(user -> {
                 user.setFirstName(newUser.getFirstName());
@@ -66,10 +72,7 @@ public class UserController {
 
                 return userRepository.save(user);
             })
-            .orElseGet(() -> {
-                return userRepository.save(newUser);
-            });
-            // .orElseThrow(() -> new RuntimeException("UserEntity not found with id: " + id));;
+            .orElseThrow(() -> new UserNotFoundException(id));
         return assembler.toModel(usr);
     }
 
