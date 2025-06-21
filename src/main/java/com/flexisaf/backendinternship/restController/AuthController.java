@@ -13,7 +13,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +28,7 @@ import com.flexisaf.backendinternship.repository.RoleRepository;
 import com.flexisaf.backendinternship.repository.UserRepository;
 import com.flexisaf.backendinternship.service.JwtServiceImpl;
 import com.flexisaf.backendinternship.service.UserDetailsImpl;
+import com.flexisaf.backendinternship.service.UserServiceImpl;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -49,10 +49,10 @@ public class AuthController {
     RoleRepository roleRepository;
 
     @Autowired
-    PasswordEncoder encoder;
+    JwtServiceImpl jwtService;
 
     @Autowired
-    JwtServiceImpl jwtService;
+    UserServiceImpl userServiceImpl;
 
 
     @PostMapping("/signin")
@@ -106,7 +106,7 @@ public class AuthController {
        user.setEmail(entity.getEmail());
        user.setDob(entity.getDob());
        user.setGender(entity.getGender());
-       user.setPassword(encoder.encode(entity.getPassword()));
+       user.setPassword(entity.getPassword());
        Set<String> entityRoles = entity.getRoles();
        Set<RoleEntity> roles = new HashSet<>();
 
@@ -142,7 +142,7 @@ public class AuthController {
 
        user.setRoles(roles);
 
-       userRepository.save(user);
+       userServiceImpl.addUser(user);
        Authentication authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(entity.getEmail(), entity.getPassword()));
         
