@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @OpenAPIDefinition(
-    info = @Info(title = "Flexisaf Internship", version = "1.0", description = "Backend API to laern followinf Flexisaf internship program"),
+    info = @Info(title = "Flexisaf Internship", version = "1.0", description = "Backend API to learn Flexisaf internship program"),
     security = @SecurityRequirement(name = "bearerAuth") 
 )
 @SecurityScheme(
