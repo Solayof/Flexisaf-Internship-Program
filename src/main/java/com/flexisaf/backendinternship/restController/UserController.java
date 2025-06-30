@@ -32,11 +32,16 @@ public class UserController {
 
     @GetMapping("")
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-    @Operation(summary = "Get list of UserEntity in the server")
+    @Operation(summary = "Get list of Users in the server")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
                     description = "successfully get UserEntity list"
+            ),
+
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Unauthorized: No authencation provided or jwt as expired or user dont have right permission to access the resources"
             )
     })
     public CollectionModel<EntityModel<UserEntity>> users() {
