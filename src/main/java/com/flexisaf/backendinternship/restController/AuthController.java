@@ -6,6 +6,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,6 +64,45 @@ public class AuthController {
 
 
     @PostMapping("/signin")
+    @Operation(
+        summary = "signin a user",
+        description = "signin a user and return authenication token"
+        )
+    @SecurityRequirement(name = "bearerAuth")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "successfully signin a user",
+                    content = @Content(
+                        mediaType = "application/json",
+                        schema = @Schema(implementation = JwtResponseDTO.class),
+                        examples = @ExampleObject(
+                            name = "usertExample",
+                            summary = "Sample user",
+                            value = """
+                            
+                            """
+                        )
+        )
+            ),
+
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Forbidden: No authencation provided or jwt as expired or user dont have right permission to access the resources",
+                    content = @Content(
+                        mediaType = "application/json",
+                        
+                        examples = @ExampleObject(
+                            name = "ErrorExample",
+                            summary = "return nothing",
+                            value = """
+                
+                            """
+                        )
+        )
+            ),
+            
+    })
     public ResponseEntity<?> loginUser(@Valid @RequestBody LoginDTO entity, HttpServletResponse httpResponse) {
        Authentication authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(entity.getEmail(), entity.getPassword()));
@@ -89,6 +136,49 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
+    @Operation(
+        summary = "create a user",
+        description = "create a user and return authenication token"
+        )
+    @SecurityRequirement(name = "bearerAuth")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "successfully create a user",
+                    content = @Content(
+                        mediaType = "application/json",
+                        schema = @Schema(implementation = SignupDTO.class),
+                        examples = @ExampleObject(
+                            name = "usertExample",
+                            summary = "Sample user",
+                            value = """
+                            {
+                                "jwt": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzb2xvcEBnbWFpbC5jb20iLCJpYXQiOjE3NTEzMjc4MDEsImV4cCI6MTc1MTM0NzgwMX0.ZgLwA-fiVhF86jMJr6rPJ9B3Qkogytc5lMjOLfk_XE4",
+                                "id": "aed7ebde-33e3-443b-990d-786f336cd9cc",
+                                "message": "success"
+                            }
+                            """
+                        )
+        )
+            ),
+
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Forbidden: No authencation provided or jwt as expired or user dont have right permission to access the resources",
+                    content = @Content(
+                        mediaType = "application/json",
+                        
+                        examples = @ExampleObject(
+                            name = "ErrorExample",
+                            summary = "return nothing",
+                            value = """
+                
+                            """
+                        )
+        )
+            ),
+            
+    })
     public ResponseEntity<?> createUser(@Valid @RequestBody SignupDTO entity, HttpServletResponse httpResponse) {
        if (userRepository.existsByEmail(entity.getEmail())) {
         ResponseMessageDTO response = new ResponseMessageDTO();
