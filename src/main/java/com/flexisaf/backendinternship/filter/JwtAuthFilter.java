@@ -37,14 +37,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException, IOException {
         String authHeader = request.getHeader("Authorization");
-        log.info(request.getHeader("Cookie").substring(4));
+        String cookie = request.getHeader("Cookie");
+        log.info(cookie);
         String token = null;
         String username = null;
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
-            log.info(token);
             username = jwtService.extractUsername(token);
-        }
+         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -55,8 +55,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
         }
 
-
         try {
+                    
             filterChain.doFilter(request, response);
         } catch (InvalidJwtTokenException e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
