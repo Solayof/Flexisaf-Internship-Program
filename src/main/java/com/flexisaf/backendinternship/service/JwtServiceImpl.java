@@ -9,6 +9,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.flexisaf.backendinternship.exception.InvalidJwtTokenException;
+
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -70,12 +72,16 @@ public class JwtServiceImpl {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(getSignKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            return Jwts
+                    .parserBuilder()
+                    .setSigningKey(getSignKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (Exception e) {
+            throw new InvalidJwtTokenException("Invalid or expired JWT token");
+        }
     }
 
     private Boolean isTokenExpired(String token) {
