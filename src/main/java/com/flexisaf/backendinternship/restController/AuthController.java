@@ -26,14 +26,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.flexisaf.backendinternship.constant.ERole;
+import com.flexisaf.backendinternship.constant.UserType;
 import com.flexisaf.backendinternship.dto.JwtResponseDTO;
 import com.flexisaf.backendinternship.dto.LoginDTO;
 import com.flexisaf.backendinternship.dto.ResponseMessageDTO;
 import com.flexisaf.backendinternship.dto.SignupDTO;
 import com.flexisaf.backendinternship.entity.RoleEntity;
 import com.flexisaf.backendinternship.entity.UserEntity;
+import com.flexisaf.backendinternship.entity.UserTypeEntity;
 import com.flexisaf.backendinternship.repository.RoleRepository;
 import com.flexisaf.backendinternship.repository.UserRepository;
+import com.flexisaf.backendinternship.repository.UserTypeRepository;
 import com.flexisaf.backendinternship.service.JwtServiceImpl;
 import com.flexisaf.backendinternship.service.UserDetailsImpl;
 import com.flexisaf.backendinternship.service.UserServiceImpl;
@@ -55,6 +58,9 @@ public class AuthController {
     UserRepository userRepository;
     @Autowired
     RoleRepository roleRepository;
+
+    @Autowired
+    UserTypeRepository userTypeRepository;
 
     @Autowired
     JwtServiceImpl jwtService;
@@ -197,6 +203,36 @@ public class AuthController {
        user.setDob(entity.getDob());
        user.setGender(entity.getGender());
        user.setPassword(entity.getPassword());
+
+       if (entity.getUserType() == null) {
+            UserTypeEntity userType = userTypeRepository.findByName(UserType.STUDENT)
+                .orElseThrow(() -> new RuntimeException("Usertype not found"));
+            user.setUserType(userType);
+       } else {
+           switch (entity.getUserType()) {
+            case "TEACHER":
+                UserTypeEntity userTypeTeacher = userTypeRepository.findByName(UserType.TEACHER)
+                    .orElseThrow(() -> new RuntimeException("Usertype not found"));
+                user.setUserType(userTypeTeacher);
+                break;
+            case "STUDENT":
+                UserTypeEntity userTypeStudent = userTypeRepository.findByName(UserType.STUDENT)
+                    .orElseThrow(() -> new RuntimeException("Usertype not found"));
+                user.setUserType(userTypeStudent);
+                break;
+            case "PARENT":
+                UserTypeEntity userTypeParent = userTypeRepository.findByName(UserType.PARENT)
+                    .orElseThrow(() -> new RuntimeException("Usertype not found"));
+                user.setUserType(userTypeParent);
+                break;
+           
+            default:
+                UserTypeEntity userTypeStd = userTypeRepository.findByName(UserType.STUDENT)
+                    .orElseThrow(() -> new RuntimeException("Usertype not found"));
+                user.setUserType(userTypeStd);
+           }
+       }
+
        Set<String> entityRoles = entity.getRoles();
        Set<RoleEntity> roles = new HashSet<>();
 
@@ -229,6 +265,19 @@ public class AuthController {
             }
         });
        }
+
+       RoleEntity roleRead = roleRepository.findByName(ERole.READ)
+            .orElseThrow(() -> new RuntimeException("Role not found"));
+        roles.add(roleRead);
+
+        if (user.getUserType().getName().name() == "TEACHER") {
+            RoleEntity roleWrite = roleRepository.findByName(ERole.WRITE)
+                .orElseThrow(() -> new RuntimeException("Role not found"));
+            roles.add(roleWrite);
+            RoleEntity mdRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
+                .orElseThrow(() -> new RuntimeException("Role not found"));
+            roles.add(mdRole);
+        }
 
        user.setRoles(roles);
 
