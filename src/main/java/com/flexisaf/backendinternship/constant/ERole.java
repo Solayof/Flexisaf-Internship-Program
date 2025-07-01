@@ -6,5 +6,6 @@ public enum ERole {
     ROLE_USER,
     ROLE_MODERATOR,
     WRITE,
-    READ   
+    READ,
+    ROLE_HOD 
 }
