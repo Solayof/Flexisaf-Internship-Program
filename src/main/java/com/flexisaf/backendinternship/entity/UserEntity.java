@@ -52,9 +52,16 @@ public class UserEntity {
     private LocalDateTime updatedAt;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_tp-roles",
+    @JoinTable(name = "user_to-roles",
         joinColumns = @JoinColumn(name="user_id"),
         inverseJoinColumns = @JoinColumn(name="role_id"))
     private Set<RoleEntity> roles = new HashSet<>();
+    @OneToOne
+    @JoinColumn(name = "usertype", nullable = false)
+    private UserTypeEntity userType;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Set<Course> courses = new HashSet<>();
     
 }
