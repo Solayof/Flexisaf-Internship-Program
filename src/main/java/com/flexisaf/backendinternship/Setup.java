@@ -102,6 +102,7 @@ public class Setup implements CommandLineRunner {
         Faker faker = new Faker();
 
         List<String> genders = List.of("Male", "Female");
+        List<UserTypeEntity> userTypeEntities = userTypeRepository.findAll();
 
         for (int i = 0; i < 10; i++) {
             UserEntity sign = new UserEntity();
@@ -112,6 +113,7 @@ public class Setup implements CommandLineRunner {
             sign.setMiddleName(faker.name().lastName());
             sign.setLastName(faker.name().lastName());
             sign.setGender(genders.get(new Random().nextInt(genders.size())));
+            sign.setUserType(userTypeEntities.get(new Random().nextInt(userTypeEntities.size())));
             sign.setPassword(faker.lorem().word());
 
             Optional<UserEntity> user = userRepository.findByEmail(sign.getEmail());
