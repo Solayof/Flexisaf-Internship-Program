@@ -46,7 +46,8 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(
-                            "/api/v1/noauth/**"
+                            "/api/v1/noauth/**",
+                            "/error"
                             ).permitAll()
                                 .anyRequest().authenticated()
                 )
