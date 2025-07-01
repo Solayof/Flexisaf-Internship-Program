@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import com.flexisaf.backendinternship.constant.ERole;
 import com.flexisaf.backendinternship.constant.UserType;
 import com.flexisaf.backendinternship.entity.RoleEntity;
@@ -20,6 +21,7 @@ import com.github.javafaker.Faker;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 
 @Service
 public class Setup implements CommandLineRunner {
@@ -32,6 +34,8 @@ public class Setup implements CommandLineRunner {
 
     @Autowired
     private UserTypeRepository userTypeRepository;
+    @Autowired
+    PasswordEncoder encoder;
 
     @Override
     public void run(String... args) throws Exception {
@@ -46,6 +50,13 @@ public class Setup implements CommandLineRunner {
         if(optRoleAdmin.isEmpty()){
             RoleEntity role = new RoleEntity();
             role.setName(ERole.ROLE_ADMIN);
+            roleRepository.save(role);
+        }
+
+        Optional<RoleEntity> optRolehod = roleRepository.findByName(ERole.ROLE_HOD);
+        if(optRolehod.isEmpty()){
+            RoleEntity role = new RoleEntity();
+            role.setName(ERole.ROLE_HOD);
             roleRepository.save(role);
         }
 
@@ -99,6 +110,22 @@ public class Setup implements CommandLineRunner {
             userTypeRepository.save(userTypeEntity);
         }
 
+        UserEntity superadmin = new UserEntity();
+        superadmin.setCreatedAt(LocalDateTime.now());
+        superadmin.setDob(LocalDate.now());
+        superadmin.setEmail("solayof@gmail.com");
+        superadmin.setGender("Male");
+        superadmin.setFirstName("Solomon");
+        superadmin.setMiddleName("Ayofemi");
+        superadmin.setLastName("Moses");
+        superadmin.setPassword(encoder.encode("solayof"));
+        Optional<RoleEntity> optRoleSupAdmin = roleRepository.findByName(ERole.ROLE_SUPERADMIN);
+        Optional<UserTypeEntity> optTe = userTypeRepository.findByName(UserType.TEACHER);
+        superadmin.setRoles(Set.of(optRoleSupAdmin.get()));
+        superadmin.setUserType(optTe.get());
+
+        userRepository.save(superadmin);
+
         Faker faker = new Faker();
 
         List<String> genders = List.of("Male", "Female");
@@ -114,7 +141,7 @@ public class Setup implements CommandLineRunner {
             sign.setLastName(faker.name().lastName());
             sign.setGender(genders.get(new Random().nextInt(genders.size())));
             sign.setUserType(userTypeEntities.get(new Random().nextInt(userTypeEntities.size())));
-            sign.setPassword(faker.lorem().word());
+            sign.setPassword(encoder.encode(faker.lorem().word()));
 
             Optional<UserEntity> user = userRepository.findByEmail(sign.getEmail());
 
@@ -123,5 +150,6 @@ public class Setup implements CommandLineRunner {
             }
             
         }
+        
     }
 }
