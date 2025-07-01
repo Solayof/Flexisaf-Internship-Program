@@ -36,7 +36,7 @@ public class UserController {
 
 
     @GetMapping("")
-    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('SUPERADMIN') or hasRole('ADMIN')")
     @Operation(
         summary = "Get list of Users in the server",
         description = "Retrieve list of users in the server and request user most right permission to retrieve data"
@@ -146,7 +146,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('SUPERADMIN') or hasRole('ADMIN')")
     @Operation(
         summary = "Get a user with the given id in the server",
         description = "Retrieve a user from the server and request user most right permission to retrieve data"
@@ -241,7 +241,7 @@ public class UserController {
 
     
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN') or hasRole('SUPERADMIN')")
     @Operation(
         summary = "Update a user with the given id in the server",
         description = "Update a user in the server and request user most right permission to retrieve data"
