@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import com.flexisaf.backendinternship.constant.ERole;
 import com.flexisaf.backendinternship.constant.UserType;
 import com.flexisaf.backendinternship.entity.RoleEntity;
@@ -16,6 +15,7 @@ import com.flexisaf.backendinternship.entity.UserTypeEntity;
 import com.flexisaf.backendinternship.repository.RoleRepository;
 import com.flexisaf.backendinternship.repository.UserRepository;
 import com.flexisaf.backendinternship.repository.UserTypeRepository;
+import com.flexisaf.backendinternship.service.UserServiceImpl;
 import com.github.javafaker.Faker;
 
 import java.util.List;
@@ -35,7 +35,7 @@ public class Setup implements CommandLineRunner {
     @Autowired
     private UserTypeRepository userTypeRepository;
     @Autowired
-    PasswordEncoder encoder;
+    UserServiceImpl userServiceImpl;
 
     @Override
     public void run(String... args) throws Exception {
@@ -118,13 +118,13 @@ public class Setup implements CommandLineRunner {
         superadmin.setFirstName("Solomon");
         superadmin.setMiddleName("Ayofemi");
         superadmin.setLastName("Moses");
-        superadmin.setPassword(encoder.encode("solayof"));
+        superadmin.setPassword("solayof");
         Optional<RoleEntity> optRoleSupAdmin = roleRepository.findByName(ERole.ROLE_SUPERADMIN);
         Optional<UserTypeEntity> optTe = userTypeRepository.findByName(UserType.TEACHER);
         superadmin.setRoles(Set.of(optRoleSupAdmin.get()));
         superadmin.setUserType(optTe.get());
 
-        userRepository.save(superadmin);
+        userServiceImpl.addUser(superadmin);
 
         Faker faker = new Faker();
 
@@ -141,12 +141,12 @@ public class Setup implements CommandLineRunner {
             sign.setLastName(faker.name().lastName());
             sign.setGender(genders.get(new Random().nextInt(genders.size())));
             sign.setUserType(userTypeEntities.get(new Random().nextInt(userTypeEntities.size())));
-            sign.setPassword(encoder.encode(faker.lorem().word()));
+            sign.setPassword(faker.lorem().word());
 
             Optional<UserEntity> user = userRepository.findByEmail(sign.getEmail());
 
             if (user.isEmpty()) {
-                userRepository.save(sign);
+                userServiceImpl.addUser(sign);
             }
             
         }
