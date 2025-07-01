@@ -1,5 +1,8 @@
 package com.flexisaf.backendinternship.entity;
 
+
+import java.util.UUID;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,12 +15,16 @@ import lombok.*;
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private UUID id;
 
     @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "description")
     private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
 
 }
