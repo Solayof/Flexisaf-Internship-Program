@@ -37,6 +37,7 @@ public class SignupDTO {
     private String password;
     @NotNull
     private LocalDateTime createdAt;
+    private String userType;
     private Set<String> roles;
     
 }
