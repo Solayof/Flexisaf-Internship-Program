@@ -8,10 +8,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.flexisaf.backendinternship.constant.ERole;
+import com.flexisaf.backendinternship.constant.UserType;
 import com.flexisaf.backendinternship.entity.RoleEntity;
 import com.flexisaf.backendinternship.entity.UserEntity;
+import com.flexisaf.backendinternship.entity.UserTypeEntity;
 import com.flexisaf.backendinternship.repository.RoleRepository;
 import com.flexisaf.backendinternship.repository.UserRepository;
+import com.flexisaf.backendinternship.repository.UserTypeRepository;
 import com.github.javafaker.Faker;
 
 import java.util.List;
@@ -27,8 +30,18 @@ public class Setup implements CommandLineRunner {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserTypeRepository userTypeRepository;
+
     @Override
     public void run(String... args) throws Exception {
+        Optional<RoleEntity> optRoleSuperAdmin = roleRepository.findByName(ERole.ROLE_SUPERADMIN);
+        if(optRoleSuperAdmin.isEmpty()){
+            RoleEntity role = new RoleEntity();
+            role.setName(ERole.ROLE_SUPERADMIN);
+            roleRepository.save(role);
+        }
+
         Optional<RoleEntity> optRoleAdmin = roleRepository.findByName(ERole.ROLE_ADMIN);
         if(optRoleAdmin.isEmpty()){
             RoleEntity role = new RoleEntity();
@@ -48,6 +61,42 @@ public class Setup implements CommandLineRunner {
             RoleEntity role = new RoleEntity();
             role.setName(ERole.ROLE_USER);
             roleRepository.save(role);
+        }
+
+        Optional<RoleEntity> optRoleRead = roleRepository.findByName(ERole.READ);
+        if(optRoleRead.isEmpty()){
+            RoleEntity role = new RoleEntity();
+            role.setName(ERole.READ);
+            roleRepository.save(role);
+        }
+
+        Optional<RoleEntity> optRoleWrite = roleRepository.findByName(ERole.WRITE);
+        if(optRoleWrite.isEmpty()){
+            RoleEntity role = new RoleEntity();
+            role.setName(ERole.WRITE);
+            roleRepository.save(role);
+        }
+
+
+        Optional<UserTypeEntity> optTeacher = userTypeRepository.findByName(UserType.TEACHER);
+        if(optTeacher.isEmpty()){
+            UserTypeEntity userTypeEntity = new UserTypeEntity();
+            userTypeEntity.setName(UserType.TEACHER);
+            userTypeRepository.save(userTypeEntity);
+        }
+
+        Optional<UserTypeEntity> optStudent = userTypeRepository.findByName(UserType.STUDENT);
+        if(optStudent.isEmpty()){
+            UserTypeEntity userTypeEntity = new UserTypeEntity();
+            userTypeEntity.setName(UserType.STUDENT);
+            userTypeRepository.save(userTypeEntity);
+        }
+
+        Optional<UserTypeEntity> optParent = userTypeRepository.findByName(UserType.PARENT);
+        if(optParent.isEmpty()){
+            UserTypeEntity userTypeEntity = new UserTypeEntity();
+            userTypeEntity.setName(UserType.PARENT);
+            userTypeRepository.save(userTypeEntity);
         }
 
         Faker faker = new Faker();
