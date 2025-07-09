@@ -38,7 +38,8 @@ public class CustomExceptionHandler {
         Map<String, String> error = new HashMap<>();
 
         error.put("error", "Invalid input for parameter: " + ex.getName());
-        error.put("expectedType", ex.getRequiredType() != null? ex.getRequiredType().getSimpleName(): "unknown");
+        Class<?> requiredType = ex.getRequiredType();
+        error.put("expectedType", requiredType != null ? requiredType.getSimpleName() : "unknown");
 
         error.put("message", ex.getMessage());
 
