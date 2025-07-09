@@ -62,7 +62,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         } catch (InvalidJwtTokenException e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json");
-            response.getWriter().write(new ObjectMapper().writeValueAsString(Map.of("error", "Unauthorized", "message", e.getMessage())));
+            response.getWriter()
+            .write(new ObjectMapper()
+            .writeValueAsString(Map.of("error", "Unauthorized",
+            "message", "{\"error\": \"Access denied. You do not have permission to access this resource.\"}")));
         }
     }
 }
