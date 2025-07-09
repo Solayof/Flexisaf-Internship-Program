@@ -2,9 +2,10 @@ package com.flexisaf.backendinternship.restController;
 
 
 import com.flexisaf.backendinternship.entity.Course;
-import com.flexisaf.backendinternship.exception.CourseNotFoundException;
-import com.flexisaf.backendinternship.exception.TeacherNotFoundException;
-import com.flexisaf.backendinternship.repository.CourseRepository;
+import com.flexisaf.backendinternship.entity.UserEntity;
+import com.flexisaf.backendinternship.repository.UserRepository;
+import com.flexisaf.backendinternship.service.CourseService;
+import com.flexisaf.backendinternship.util.CommonUtil;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -29,11 +30,55 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping("/courses")
 public class CourseController {
     @Autowired
-    private CourseRepository courseRepository;
+    private CourseService courseService;
     @Autowired
     private CourseModelAssembler assembler;
+   @Autowired
+   private CommonUtil commonUtil;
 
-    
+   @PostMapping("")
+   @Operation(
+        summary = "Create a new course in the server",
+        description = "Create a new course in the server and request user most right permission to create data"
+        )
+    @SecurityRequirement(name = "bearerAuth")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "successfully created a course",
+                    content = @Content(
+                        mediaType = "application/json",
+                        schema = @Schema(implementation = Course.class),
+                        examples = @ExampleObject(
+                            name = "courseExample",
+                            summary = "Sample course",
+                            value = """
+                            
+                            """
+                        )
+        )
+            ),
+
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Forbidden: No authencation provided or jwt as expired or user dont have right permission to access the resources",
+                    content = @Content(
+                        mediaType = "application/json",
+                        
+                        examples = @ExampleObject(
+                            name = "ErrorExample",
+                            summary = "return nothing",
+                            value = """
+                
+                            """
+                        )
+        )
+            ),
+            
+    })
+    public EntityModel<Course> createCourse(@RequestBody Course course) {
+        return assembler.toModel(courseService.createCourse(course));
+    }
 
     @GetMapping("")
     @Operation(
@@ -76,7 +121,7 @@ public class CourseController {
             
     }) 
     public CollectionModel<EntityModel<Course>> courses() {
-        List<EntityModel<Course>> courses = courseRepository.findAll().stream()
+        List<EntityModel<Course>> courses = courseService.getAllCourses().stream()
                 .map(assembler::toModel).toList();
 
         return CollectionModel.of(courses,
@@ -139,8 +184,7 @@ public class CourseController {
             
     })
     public EntityModel<Course> getOne(@PathVariable UUID id) {
-        Course course = courseRepository.findById(id)
-        .orElseThrow(() -> new CourseNotFoundException(id));
+        Course course = courseService.findById(id);
         return assembler.toModel(course);
     }
 
@@ -201,13 +245,9 @@ public class CourseController {
     })
     public EntityModel<Course> updateOne(@RequestBody Course newCourse, @PathVariable UUID id) {
         return assembler.toModel(
-            courseRepository.findById(id)
-            .map(course -> {
-                course.setContent(newCourse.getContent());
-
-                return courseRepository.save(course);
-            })
-            .orElseThrow(() -> new TeacherNotFoundException(id))
-        );
+            courseService.updateCourse(
+                courseService.findById(id)
+                .update(newCourse.getContent())
+        ));
     }
 }
