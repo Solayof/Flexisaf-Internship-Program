@@ -23,6 +23,9 @@ public class Course {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "content")
+    private String content;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
