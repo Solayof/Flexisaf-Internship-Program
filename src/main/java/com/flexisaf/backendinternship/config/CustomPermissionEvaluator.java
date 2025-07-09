@@ -10,10 +10,13 @@ import com.flexisaf.backendinternship.repository.CourseRepository;
 import com.flexisaf.backendinternship.service.UserDetailsImpl;
 import com.flexisaf.backendinternship.util.CommonUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.Serializable;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Component
 public class CustomPermissionEvaluator implements PermissionEvaluator {
 
@@ -25,11 +28,12 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
 
     @Override
     public boolean hasPermission(Authentication auth, Serializable targetId, String targetType, Object permission) {
+        log.info("Checking permission for targetId: {}, targetType: {}, permission: {}", targetId, targetType, permission);
         if (auth == null || targetType == null || permission == null || targetId == null)
             return false;
 
         boolean isAdmin = auth.getAuthorities().stream()
-            .anyMatch(granted -> granted.getAuthority().equals("ROLE_ADMIN"));
+            .anyMatch(granted -> granted.getAuthority().equals("ROLE_ADMIN") || granted.getAuthority().equals("ROLE_SUPERADMIN"));
 
         if (isAdmin) return true;
 
@@ -38,6 +42,7 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
         case "Document":
             return checkDocumentPermission(auth, targetId, permission.toString());
         case "Course":
+            log.info("Checking course permission for targetId: {}, permission: {}", targetId, permission);
             return checkCoursePermission(auth, targetId, permission.toString());
         case "Profile":
             return checkProfilePermission(auth, targetId, permission.toString());
@@ -56,12 +61,17 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
 
     private boolean checkCoursePermission(Authentication auth, Serializable targetId, String permission) {
         Optional<Course> optionalCourse = courseRepository.findById((UUID) targetId);
+        if (permission.toLowerCase().equals("write") && optionalCourse.isEmpty()) {
+            log.info(permission + " permission requested for non-existing course with ID: " + targetId);
+            return auth.getAuthorities().stream()
+            .anyMatch(granted -> granted.getAuthority().equals("WRITE")); 
+        }
 
         if (optionalCourse.isEmpty()) return false;
         
         Course course = optionalCourse.get();
         UserDetailsImpl currentUser = commonUtil.loggedInUser();
-        boolean isInstructor = course.getUser().getEmail().equals(currentUser.getEmail());
+        boolean isInstructor = course.getOwner().getEmail().equals(currentUser.getEmail());
 
         switch (permission.toLowerCase()) {
         case "read":
