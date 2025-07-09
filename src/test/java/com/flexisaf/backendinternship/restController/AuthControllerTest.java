@@ -5,12 +5,10 @@ import com.flexisaf.backendinternship.constant.UserType;
 import com.flexisaf.backendinternship.dto.LoginDTO;
 import com.flexisaf.backendinternship.dto.SignupDTO;
 import com.flexisaf.backendinternship.entity.RoleEntity;
-import com.flexisaf.backendinternship.entity.UserEntity;
 import com.flexisaf.backendinternship.entity.UserTypeEntity;
 import com.flexisaf.backendinternship.repository.RoleRepository;
 import com.flexisaf.backendinternship.repository.UserRepository;
 import com.flexisaf.backendinternship.repository.UserTypeRepository;
-import com.flexisaf.backendinternship.restController.AuthController;
 import com.flexisaf.backendinternship.service.JwtServiceImpl;
 import com.flexisaf.backendinternship.service.UserDetailsImpl;
 import com.flexisaf.backendinternship.service.UserServiceImpl;
@@ -21,21 +19,16 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.text.Collator;
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -71,15 +64,12 @@ public class AuthControllerTest {
         when(authenticationManager.authenticate(any())).thenReturn(auth);
         when(jwtService.generateJwtToken(any())).thenReturn("jwt-token");
 
-        Collection<? extends GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        when(userDetails.getAuthorities()).thenReturn(authorities);
-        // when(userDetails.getAuthorities()).thenReturn(
-        //     List.of("ROLE_ADMIN")
-        //         .stream()
-        //         .map(role -> new SimpleGrantedAuthority(role))
-        //         .collect(Collectors.toList())
-        // );
-        // when(userDetails.getAuthorities()).thenReturn(List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
+        doReturn(
+            List.of("ROLE_ADMIN", "ROLE_USER", "ROLE_MODERATOR")
+                .stream()
+                .map(role -> new SimpleGrantedAuthority(role))
+                .collect(Collectors.toList())
+        ).when(userDetails).getAuthorities();
         when(userDetails.getId()).thenReturn(UUID.randomUUID());
         when(userDetails.getFirstName()).thenReturn("John");
         when(userDetails.getMiddleName()).thenReturn("Doe");
@@ -87,7 +77,7 @@ public class AuthControllerTest {
         when(userDetails.getEmail()).thenReturn("test@example.com");
 
         ResponseEntity<?> result = authController.loginUser(loginDTO, response);
-        assertEquals(200, result.getStatusCodeValue());
+        assertEquals(200, result.getStatusCode().value());
     }
 
     @Test
@@ -116,6 +106,6 @@ public class AuthControllerTest {
         when(jwtService.generateJwtToken(any())).thenReturn("jwt-token");
 
         ResponseEntity<?> response = authController.createUser(signupDTO, this.response);
-        assertEquals(201, response.getStatusCodeValue());
+        assertEquals(201, response.getStatusCode().value());
     }
 }
