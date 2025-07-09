@@ -52,7 +52,7 @@ public class UserEntity {
     private LocalDateTime updatedAt;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_to-roles",
+    @JoinTable(name = "user_to_roles",
         joinColumns = @JoinColumn(name="user_id"),
         inverseJoinColumns = @JoinColumn(name="role_id"))
     private Set<RoleEntity> roles = new HashSet<>();
@@ -60,8 +60,13 @@ public class UserEntity {
     @JoinColumn(name = "usertype", nullable = false)
     private UserTypeEntity userType;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
+    @EqualsAndHashCode.Exclude
     private Set<Course> courses = new HashSet<>();
     
+    public void addCourse(Course course) {
+        courses.add(course);
+        course.setOwner(this);
+}
 }
