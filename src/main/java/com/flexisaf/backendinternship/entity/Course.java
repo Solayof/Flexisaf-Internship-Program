@@ -1,6 +1,9 @@
 package com.flexisaf.backendinternship.entity;
 
 
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import jakarta.persistence.*;
@@ -12,7 +15,8 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Course {
+public class Course implements Serializable {
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -28,6 +32,19 @@ public class Course {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user;
+    @EqualsAndHashCode.Exclude
+    private UserEntity owner;
+
+    public Course update(String content) {
+        this.content = content;
+        return this;
+    }
+    
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "course_to_subcribers",
+        joinColumns = @JoinColumn(name="course_id"),
+        inverseJoinColumns = @JoinColumn(name="user_id"))
+    @EqualsAndHashCode.Exclude
+    private Set<UserEntity> subscribers = new HashSet<>();
 
 }
