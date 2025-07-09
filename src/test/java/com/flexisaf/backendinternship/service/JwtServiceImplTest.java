@@ -1,13 +1,11 @@
 package com.flexisaf.backendinternship.service;
 
 import com.flexisaf.backendinternship.exception.InvalidJwtTokenException;
-import com.flexisaf.backendinternship.service.UserDetailsImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.lang.reflect.Field;
 import java.util.Date;

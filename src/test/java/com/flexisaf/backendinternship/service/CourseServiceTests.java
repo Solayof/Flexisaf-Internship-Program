@@ -29,6 +29,13 @@ class CourseServiceTests {
         closeable = MockitoAnnotations.openMocks(this);
     }
 
+    @org.junit.jupiter.api.AfterEach
+    void tearDown() throws Exception {
+        if (closeable != null) {
+            closeable.close();
+        }
+    }
+
     @Test
     void testFindById_whenCourseExists_returnsCourse() {
         UUID courseId = UUID.randomUUID();

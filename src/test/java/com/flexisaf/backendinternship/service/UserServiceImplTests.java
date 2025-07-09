@@ -36,6 +36,13 @@ class UserServiceImplTest {
         closeable = MockitoAnnotations.openMocks(this);
     }
 
+    @org.junit.jupiter.api.AfterEach
+    void tearDown() throws Exception {
+        if (closeable != null) {
+            closeable.close();
+        }
+    }
+
     @Test
     void testLoadUserByUsername_UserExists() {
         UserEntity user = new UserEntity();
