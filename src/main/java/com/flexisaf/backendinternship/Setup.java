@@ -120,8 +120,9 @@ public class Setup implements CommandLineRunner {
         superadmin.setLastName("Moses");
         superadmin.setPassword("solayof");
         Optional<RoleEntity> optRoleSupAdmin = roleRepository.findByName(ERole.ROLE_SUPERADMIN);
+        Optional<RoleEntity> optRoleAdm = roleRepository.findByName(ERole.ROLE_ADMIN);
         Optional<UserTypeEntity> optTe = userTypeRepository.findByName(UserType.TEACHER);
-        superadmin.setRoles(Set.of(optRoleSupAdmin.get()));
+        superadmin.setRoles(Set.of(optRoleSupAdmin.get(), optRoleAdm.get()));
         superadmin.setUserType(optTe.get());
 
         userServiceImpl.addUser(superadmin);

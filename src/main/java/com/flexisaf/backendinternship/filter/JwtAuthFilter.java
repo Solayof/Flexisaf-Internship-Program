@@ -33,35 +33,39 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Autowired
     private UserServiceImpl userDetailsService;
-
+    
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException, IOException {
-        String authHeader = request.getHeader("Authorization");
-        String cookie = request.getHeader("Cookie");
-        log.info(cookie);
-        String token = null;
-        String username = null;
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
-            username = jwtService.extractUsername(token);
-         }
-
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (jwtService.validateToken(token, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
-        }
-
         try {
+                String authHeader = request.getHeader("Authorization");
+                String cookie = request.getHeader("Cookie");
+                log.info(cookie);
+                String token = null;
+                String username = null;
+                if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                    token = authHeader.substring(7);
+                    username = jwtService.extractUsername(token);
+                }
+
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                    if (jwtService.validateToken(token, userDetails)) {
+                        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                    }
+                }
+                log.info("JWT Authentication successful for user: {}", username);
+
                     
             filterChain.doFilter(request, response);
         } catch (InvalidJwtTokenException e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json");
-            response.getWriter().write(new ObjectMapper().writeValueAsString(Map.of("error", "Unauthorized", "message", e.getMessage())));
+            response.getWriter()
+            .write(new ObjectMapper()
+            .writeValueAsString(Map.of("error", "Unauthorized",
+            "message", "{\"error\": \"Access denied. You do not have permission to access this resource.\"}")));
         }
     }
 }
