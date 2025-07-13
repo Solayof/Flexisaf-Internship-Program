@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flexisaf.backendinternship.exception.InvalidJwtTokenException;
 import com.flexisaf.backendinternship.service.JwtServiceImpl;
 import com.flexisaf.backendinternship.service.UserServiceImpl;
 
@@ -59,13 +58,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
                     
             filterChain.doFilter(request, response);
-        } catch (InvalidJwtTokenException e) {
+        } catch (Exception e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json");
             response.getWriter()
             .write(new ObjectMapper()
             .writeValueAsString(Map.of("error", "Unauthorized",
-            "message", "{\"error\": \"Access denied. You do not have permission to access this resource.\"}")));
+            "message", "Access denied. You do not have permission to access this resource.",
+            "errMsg", e.getMessage())));
         }
     }
 }
