@@ -274,7 +274,7 @@ public class AuthController {
             RoleEntity roleWrite = roleRepository.findByName(ERole.WRITE)
                 .orElseThrow(() -> new RuntimeException("Role not found"));
             roles.add(roleWrite);
-            RoleEntity mdRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
+            RoleEntity mdRole = roleRepository.findByName(ERole.ROLE_TUTOR)
                 .orElseThrow(() -> new RuntimeException("Role not found"));
             roles.add(mdRole);
         }
