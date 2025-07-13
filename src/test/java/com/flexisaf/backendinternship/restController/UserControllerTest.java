@@ -85,7 +85,8 @@ public class UserControllerTest {
 
         EntityModel<UserEntity> result = userController.updateOne(updatedUser, userId);
 
-        assertThat(result.getContent().getFirstName()).isEqualTo("Updated");
+        assertThat(result.getContent()).isNotNull();
+        assertThat(Objects.requireNonNull(result.getContent()).getFirstName()).isEqualTo("Updated");
         verify(userRepository).save(any(UserEntity.class));
     }
 

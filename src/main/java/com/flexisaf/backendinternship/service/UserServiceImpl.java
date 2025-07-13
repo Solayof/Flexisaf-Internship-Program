@@ -4,6 +4,9 @@ import com.flexisaf.backendinternship.entity.UserEntity;
 import com.flexisaf.backendinternship.exception.UserNotFoundException;
 import com.flexisaf.backendinternship.repository.UserRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,6 +25,11 @@ public class UserServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
         return UserDetailsImpl.build(user);
+    }
+
+    public UserEntity getUserById(UUID id) throws UserNotFoundException {
+        return userRepository.findById(id)
+        .orElseThrow(() -> new UserNotFoundException(id));
     }
 
     public String addUser(UserEntity user) {

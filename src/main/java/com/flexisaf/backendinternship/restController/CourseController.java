@@ -2,9 +2,8 @@ package com.flexisaf.backendinternship.restController;
 
 
 import com.flexisaf.backendinternship.entity.Course;
-import com.flexisaf.backendinternship.entity.UserEntity;
-import com.flexisaf.backendinternship.repository.UserRepository;
 import com.flexisaf.backendinternship.service.CourseService;
+import com.flexisaf.backendinternship.service.UserServiceImpl;
 import com.flexisaf.backendinternship.util.CommonUtil;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,12 +18,19 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 @RestController
 @RequestMapping("/courses")
@@ -35,6 +41,8 @@ public class CourseController {
     private CourseModelAssembler assembler;
    @Autowired
    private CommonUtil commonUtil;
+   @Autowired
+   UserServiceImpl userServiceImpl;
 
    @PostMapping("")
    @Operation(
@@ -250,4 +258,30 @@ public class CourseController {
                 .update(newCourse.getContent())
         ));
     }
+
+    @GetMapping("/mycourses")
+    @PreAuthorize("hasRole('TUTOR') or hasRole('SUPERADMIN') or hasRole('ADMIN')")
+    public CollectionModel<EntityModel<Course>> getMyCourses() {
+        List<EntityModel<Course>> courses = courseService.getMyCourses().stream()
+                .map(assembler::toModel).toList();
+
+        return CollectionModel.of(courses,
+                linkTo(methodOn(CourseController.class).courses()).withSelfRel());
+    }
+    @GetMapping("/tutor/{id}")
+    public CollectionModel<EntityModel<Course>> getTutorCourses(@PathVariable UUID id) {
+        List<EntityModel<Course>> courses = courseService.getCoursesByOwner(userServiceImpl.getUserById(id))
+        .stream()
+        .map(assembler::toModel).toList();
+
+        return CollectionModel.of(courses,
+                linkTo(methodOn(CourseController.class).courses()).withSelfRel());
+    }
+
+    @GetMapping("/delete/{id}")
+    public ResponseEntity<?> getMethodName(@PathVariable UUID id) {
+        courseService.deleteCourse(id);
+        return new ResponseEntity<>(Map.of("message", true), HttpStatus.ACCEPTED);
+    }
+    
 }
