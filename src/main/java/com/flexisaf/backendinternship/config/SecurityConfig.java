@@ -44,10 +44,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
+                .headers(headers -> headers.frameOptions().disable())
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(
                             "/api/v1/noauth/**",
-                            "/error"
+                            "/error",
+                            "/favicon.ico"
                             ).permitAll()
                                 .anyRequest().authenticated()
                 )
