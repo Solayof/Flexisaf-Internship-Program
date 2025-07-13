@@ -99,6 +99,7 @@ public class AuthControllerTest {
         when(roleRepository.findByName(ERole.ROLE_USER)).thenReturn(Optional.of(new RoleEntity(UUID.randomUUID(), ERole.ROLE_USER)));
         when(roleRepository.findByName(ERole.READ)).thenReturn(Optional.of(new RoleEntity(UUID.randomUUID(), ERole.READ)));
         when(roleRepository.findByName(ERole.WRITE)).thenReturn(Optional.of(new RoleEntity(UUID.randomUUID(), ERole.WRITE)));
+        when(roleRepository.findByName(ERole.ROLE_TUTOR)).thenReturn(Optional.of(new RoleEntity(UUID.randomUUID(), ERole.ROLE_TUTOR)));
         when(roleRepository.findByName(ERole.ROLE_MODERATOR)).thenReturn(Optional.of(new RoleEntity(UUID.randomUUID(), ERole.ROLE_MODERATOR)));
 
         Authentication auth = mock(Authentication.class);
