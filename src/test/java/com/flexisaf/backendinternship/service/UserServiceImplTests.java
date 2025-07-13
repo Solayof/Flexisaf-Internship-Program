@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -66,6 +67,31 @@ class UserServiceImplTest {
         });
 
         verify(userRepository, times(1)).findByEmail("missing@example.com");
+    }
+
+    @Test
+    void testgetUserById_UserExists() {
+        UserEntity user = new UserEntity();
+        user.setId(UUID.randomUUID());
+        user.setEmail(faker.internet().emailAddress());
+        user.setPassword("encodedpass");
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        UserEntity loadedUser = userService.getUserById(user.getId());
+        assertEquals(user, loadedUser);
+        verify(userRepository, times(1)).findById(user.getId());
+    }
+
+    @Test
+    void testgetUserById_UserNotFound() {
+        UUID id = UUID.randomUUID();
+        when(userRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundException.class, () -> {
+            userService.getUserById(id);
+        });
+
+        verify(userRepository, times(1)).findById(id);
     }
 
     @Test
