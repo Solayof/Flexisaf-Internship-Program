@@ -74,6 +74,13 @@ public class Setup implements CommandLineRunner {
             roleRepository.save(role);
         }
 
+        Optional<RoleEntity> optRoleTutor = roleRepository.findByName(ERole.ROLE_TUTOR);
+        if(optRoleTutor.isEmpty()){
+            RoleEntity role = new RoleEntity();
+            role.setName(ERole.ROLE_TUTOR);
+            roleRepository.save(role);
+        }
+
         Optional<RoleEntity> optRoleRead = roleRepository.findByName(ERole.READ);
         if(optRoleRead.isEmpty()){
             RoleEntity role = new RoleEntity();
