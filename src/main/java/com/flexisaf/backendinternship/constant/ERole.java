@@ -5,6 +5,7 @@ public enum ERole {
     ROLE_ADMIN,
     ROLE_USER,
     ROLE_MODERATOR,
+    ROLE_TUTOR,
     WRITE,
     READ,
     DELETE,
